@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { ArtistProvider } from "./context/ArtistContext";
+import Header from "./components/Header";
+import HomePage from "./pages/HomePage";
+import ProfilePage from "./pages/ProfilePage";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ArtistProvider>
+      <BrowserRouter>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+          <Header />
+
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/artist/:id" element={<ProfilePage />} />
+          </Routes>
+
+          {/* Global toast notifications */}
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: "#1f2937",
+                color: "#f9fafb",
+                borderRadius: "12px",
+                fontSize: "14px",
+              },
+              success: {
+                iconTheme: { primary: "#f97316", secondary: "#fff" },
+              },
+            }}
+          />
+        </div>
+      </BrowserRouter>
+    </ArtistProvider>
   );
 }
-
-export default App;
