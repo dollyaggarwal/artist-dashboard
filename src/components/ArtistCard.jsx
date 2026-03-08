@@ -17,7 +17,6 @@ export default function ArtistCard({ artist, index }) {
         transition={{ duration: 0.35, delay: (index % 8) * 0.05 }}
         className="group relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 transition-all duration-300 hover:-translate-y-1"
       >
-        {/* Premium Badge */}
         {artist.isPremium && (
           <div className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold shadow-lg">
             <FiStar size={10} fill="white" />
@@ -25,7 +24,6 @@ export default function ArtistCard({ artist, index }) {
           </div>
         )}
 
-        {/* Profile Image */}
         <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 overflow-hidden">
           <img
             src={artist.profile_image}
@@ -36,32 +34,26 @@ export default function ArtistCard({ artist, index }) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
 
-        {/* Card Body */}
         <div className="p-4">
-          {/* Category Badge */}
           <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full mb-2 ${getCategoryColor(artist.art_category)}`}>
             {artist.art_category}
           </span>
 
-          {/* Name */}
           <h3 className="font-bold text-gray-900 dark:text-white text-base mb-1 truncate">
             {artist.name}
           </h3>
 
-          {/* Location */}
           <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-xs mb-3">
             <FiMapPin size={11} />
             <span className="truncate">{artist.location}</span>
           </div>
 
-          {/* Followers */}
           <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 text-sm mb-4">
             <FiUsers size={13} />
             <span className="font-semibold">{formatFollowers(artist.followers)}</span>
             <span className="text-gray-400 text-xs">followers</span>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex gap-2">
             <button
               onClick={() => navigate(`/artist/${artist.id}`)}
@@ -83,7 +75,6 @@ export default function ArtistCard({ artist, index }) {
         </div>
       </motion.div>
 
-      {/* Upgrade Modal */}
       {showUpgrade && (
         <UpgradeModal artist={artist} onClose={() => setShowUpgrade(false)} />
       )}

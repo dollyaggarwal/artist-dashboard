@@ -4,20 +4,23 @@ import { ArtistProvider } from "./context/ArtistContext";
 import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
+import FeaturedPage from "./pages/FeaturedPage";
+import CustomCursor from "./components/animations/CustomCursor";
 
 export default function App() {
   return (
     <ArtistProvider>
       <BrowserRouter>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+          <CustomCursor />
           <Header />
 
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/artist/:id" element={<ProfilePage />} />
+            <Route path="/featured" element={<FeaturedPage />} />
           </Routes>
 
-          {/* Global toast notifications */}
           <Toaster
             position="bottom-right"
             toastOptions={{

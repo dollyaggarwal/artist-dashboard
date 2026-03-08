@@ -6,8 +6,7 @@ import { useArtists } from "../context/ArtistContext";
 
 const NAV_LINKS = [
   { label: "Discover", to: "/" },
-  { label: "Featured", to: "/#featured" },
-  { label: "Categories", to: "/#categories" },
+  { label: "Featured", to: "/featured" },
 ];
 
 export default function Header() {
@@ -19,6 +18,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
+
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
@@ -48,7 +48,6 @@ export default function Header() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-3">
-            {/* Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
               aria-label="Toggle dark mode"
@@ -59,7 +58,7 @@ export default function Header() {
 
             {/* Upgrade CTA */}
             <Link
-              to="/"
+              to="/featured"
               className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-semibold shadow-md hover:shadow-orange-200 dark:hover:shadow-orange-900/40 hover:scale-105 transition-all"
             >
               <FiZap size={14} />
@@ -93,14 +92,18 @@ export default function Header() {
                   key={link.to}
                   to={link.to}
                   onClick={() => setMenuOpen(false)}
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-orange-500 py-2"
+                  className={`text-sm font-medium py-2 hover:text-orange-500 transition-colors ${
+                    location.pathname === link.to
+                      ? "text-orange-500"
+                      : "text-gray-700 dark:text-gray-300"
+                  }`}
                 >
                   {link.label}
                 </Link>
               ))}
               <div className="pt-2 border-t border-gray-100 dark:border-gray-800">
                 <Link
-                  to="/"
+                  to="/featured"
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-semibold"
                 >
