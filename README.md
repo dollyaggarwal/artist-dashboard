@@ -4,7 +4,7 @@ A modern artist discovery platform where users can browse, search, filter, and u
 
 ## 🚀 Live Demo
 
-> Deploy to Vercel and paste your URL here
+https://artist-dashboard-dollyaggarwal.vercel.app/
 
 ---
 
@@ -144,4 +144,5 @@ App will run at `http://localhost:3000`
 npm start       # Start development server
 npm run build   # Production build
 npm test        # Run tests
+npm run dev     # Restart development server automatically using nodemon after each change
 ```
