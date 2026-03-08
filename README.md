@@ -1,74 +1,147 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
+# 🎨 Artista — Artist Discovery Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern artist discovery platform where users can browse, search, filter, and upgrade artist profiles. Built with React, Tailwind CSS, and Framer Motion.
 
-## Available Scripts
+## 🚀 Live Demo
 
-In the project directory, you can run:
+> Deploy to Vercel and paste your URL here
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🛠️ Tech Stack
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+| Technology | Purpose |
+|---|---|
+| React 19 | UI framework (functional components + hooks) |
+| React Router v7 | Client-side routing |
+| Tailwind CSS v3 | Utility-first styling |
+| Framer Motion | Animations and transitions |
+| React Hot Toast | Toast notifications |
+| React Icons | Icon library |
+| Axios | API data fetching |
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 📁 Project Structure
 
-### `npm run build`
+```
+src/
+├── components/
+│   ├── animations/
+│   │   ├── Aurora.jsx          # Animated mesh gradient background
+│   │   ├── Particles.jsx       # Floating connected dots canvas effect
+│   │   ├── MagneticButton.jsx  # Cursor-following magnetic button
+│   │   ├── SpotlightButton.jsx # Cursor spotlight hover effect
+│   │   ├── ShimmerText.jsx     # Moving shimmer gradient text
+│   │   └── CustomCursor.jsx    # Custom glowing cursor on upgrade elements
+│   ├── Header.jsx              # Sticky nav with dark mode toggle
+│   ├── SearchFilters.jsx       # Search bar + category + sort dropdowns
+│   ├── ArtistCard.jsx          # Artist grid card with upgrade button
+│   ├── SkeletonCard.jsx        # Loading placeholder card
+│   ├── UpgradeModal.jsx        # Multi-step payment simulation modal
+│   └── FeaturedBanner.jsx      # Premium artists banner on discover page
+├── pages/
+│   ├── HomePage.jsx            # Main discovery page
+│   ├── FeaturedPage.jsx        # Dedicated featured artists page (/featured)
+│   └── ProfilePage.jsx         # Artist detail + portfolio page
+├── context/
+│   └── ArtistContext.js        # Global state (artists, dark mode, premium)
+├── hooks/
+│   ├── useDebounce.js          # Debounce hook for search input
+│   ├── useFilteredArtists.js   # Filter + sort logic
+│   └── usePagination.js        # Infinite-scroll pagination (8 per page)
+├── services/
+│   └── artistService.js        # randomuser.me API fetch + data mapping
+├── utils/
+│   └── formatters.js           # formatFollowers, getCategoryColor
+└── data/
+    └── artists.js              # Category constants + sort options
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## ⚙️ Setup Instructions
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+# 1. Clone the repository
+git clone https://github.com/dollyaggarwal/artist-dashboard.git
 
-### `npm run eject`
+# 2. Navigate into the folder
+cd artist-dashboard
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# 3. Install dependencies
+npm install
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# 4. Start the dev server
+npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+App will run at `http://localhost:3000`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## ✨ Features
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Core
+- ✅ Fetches 20 artists from `randomuser.me` API
+- ✅ Browse artists in a responsive grid (4 col → 2 col → 1 col)
+- ✅ Search by name or location (debounced 350ms)
+- ✅ Filter by art category
+- ✅ Sort by Most Followers / Name A–Z / Name Z–A
+- ✅ Infinite scroll pagination (8 artists per page)
+- ✅ Artist profile page with portfolio gallery + lightbox
+- ✅ Premium upgrade modal with simulated payment flow
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Premium Features (on upgrade)
+- ✅ Gold Premium badge on artist card
+- ✅ Priority listing (premium artists appear first in Discover)
+- ✅ Full 6-image portfolio gallery (free = 4 images)
+- ✅ Featured banner on Discover page homepage
+- ✅ Listed on dedicated Featured page (`/featured`)
+- ✅ Custom profile banner image
+- ✅ External website link unlocked
 
-### Code Splitting
+### Featured Page (`/featured`)
+- ✅ Aurora animated hero banner at the top
+- ✅ All premium artists displayed as large expandable cards
+- ✅ Click any card to expand — shows bio, portfolio strip, social links
+- ✅ Non-premium artists shown below with "Get Featured" upgrade prompt
+- ✅ Empty state with upgrade CTA when no premium artists exist
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Animations
+- ✅ Aurora animated background in upgrade modal and featured page (Canvas)
+- ✅ Floating particles with connecting lines in modal header (Canvas)
+- ✅ ShimmerText on premium headings and payment flow
+- ✅ SpotlightButton — cursor spotlight on upgrade CTAs
+- ✅ MagneticButton — cursor-following Pay button
+- ✅ Custom glowing cursor on all upgrade elements
+- ✅ Portfolio gallery — ripple on click, slide lightbox, zoom + drag
+- ✅ Framer Motion — card entrance, modal spring, staggered reveals
+- ✅ Skeleton loading cards on first visit
 
-### Analyzing the Bundle Size
+### Bonus
+- ✅ Dark mode toggle (persisted via localStorage)
+- ✅ Debounced search
+- ✅ Persistent filters (sessionStorage)
+- ✅ Premium status persisted via localStorage
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 🎨 Design Decisions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- **Font pairing**: Syne (display/headings) + DM Sans (body)
+- **Color system**: Orange-to-pink gradient accent on a clean light/dark neutral base
+- **Context API**: Global state for artists and dark mode — avoids prop drilling
+- **Custom hooks**: `useFilteredArtists`, `useDebounce`, `usePagination` fully decoupled from UI
+- **Payment simulation**: Multi-step flow (Plan → Card Form → Processing → Success) with validation
+- **Premium priority listing**: Applied inside `useFilteredArtists` — always floats premium artists first
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 📦 Available Scripts
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-=======
-# artist-dashboard
->>>>>>> cbc41b190aa123b760c4342aeb55f69983c1f09d
+```bash
+npm start       # Start development server
+npm run build   # Production build
+npm test        # Run tests
+```
