@@ -30,35 +30,7 @@ export default function ProfilePage() {
       : artist.portfolio.slice(0, 4)
     : [];
 
-  // Keyboard navigation
-  useEffect(() => {
-    if (!lightboxOpen) return;
-    const onKey = (e) => {
-      if (e.key === "ArrowRight") goNext();
-      if (e.key === "ArrowLeft") goPrev();
-      if (e.key === "Escape") closeLightbox();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [lightboxOpen, lightboxIndex]);
-
-  const openLightbox = useCallback((index, e) => {
-    // Capture click position for ripple origin
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setRippleOrigin({ x, y });
-    setRippleActive(true);
-    setLightboxIndex(index);
-    setZoomed(false);
-
-    // Delay lightbox open to let ripple play
-    setTimeout(() => {
-      setRippleActive(false);
-      setLightboxOpen(true);
-    }, 420);
-  }, []);
-
+  // Define callbacks BEFORE useEffect that references them
   const closeLightbox = useCallback(() => {
     setLightboxOpen(false);
     setZoomed(false);
@@ -77,6 +49,32 @@ export default function ProfilePage() {
     setLightboxIndex((i) => (i - 1 + portfolioItems.length) % portfolioItems.length);
   }, [portfolioItems.length]);
 
+  const openLightbox = useCallback((index, e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setRippleOrigin({ x, y });
+    setRippleActive(true);
+    setLightboxIndex(index);
+    setZoomed(false);
+    setTimeout(() => {
+      setRippleActive(false);
+      setLightboxOpen(true);
+    }, 420);
+  }, []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (e) => {
+      if (e.key === "ArrowRight") goNext();
+      if (e.key === "ArrowLeft") goPrev();
+      if (e.key === "Escape") closeLightbox();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxOpen, lightboxIndex, goNext, goPrev, closeLightbox]);
+
   if (!artist) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -91,13 +89,6 @@ export default function ProfilePage() {
       </div>
     );
   }
-
-  // Slide variants for image navigation
-  const slideVariants = {
-    enter: (dir) => ({ x: dir > 0 ? 300 : -300, opacity: 0, scale: 0.92 }),
-    center: { x: 0, opacity: 1, scale: 1 },
-    exit: (dir) => ({ x: dir > 0 ? -300 : 300, opacity: 0, scale: 0.92 }),
-  };
 
   return (
     <>
@@ -478,9 +469,9 @@ export default function ProfilePage() {
   );
 }
 
-// Slide variants defined outside component for performance
+// Defined outside component to avoid re-creation on every render
 const slideVariants = {
-  enter: (dir) => ({ x: dir > 0 ? 280 : -280, opacity: 0, scale: 0.94 }),
+  enter: (dir) => ({ x: dir > 0 ? 300 : -300, opacity: 0, scale: 0.92 }),
   center: { x: 0, opacity: 1, scale: 1 },
-  exit: (dir) => ({ x: dir > 0 ? -280 : 280, opacity: 0, scale: 0.94 }),
+  exit: (dir) => ({ x: dir > 0 ? -300 : 300, opacity: 0, scale: 0.92 }),
 };

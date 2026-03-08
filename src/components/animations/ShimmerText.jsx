@@ -1,9 +1,4 @@
-import { useEffect, useRef } from "react";
-
-/**
- * ShimmerText — text with a moving light shimmer effect
- * React Bits inspired text shimmer
- */
+// ShimmerText — text with a moving light shimmer effect
 export default function ShimmerText({ children, className = "" }) {
   return (
     <span

@@ -13,7 +13,6 @@ export default function Aurora({ colors = ["#f97316", "#ec4899", "#8b5cf6"], siz
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     let animId;
-    let t = 0;
 
     const resize = () => {
       canvas.width = canvas.offsetWidth;
@@ -54,7 +53,6 @@ export default function Aurora({ colors = ["#f97316", "#ec4899", "#8b5cf6"], siz
         ctx.fill();
       });
 
-      t += 0.01;
       animId = requestAnimationFrame(draw);
     };
 
