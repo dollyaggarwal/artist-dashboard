@@ -1,79 +1,213 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiMapPin, FiUsers, FiZap, FiStar } from "react-icons/fi";
-import { formatFollowers, getCategoryColor } from "../utils/formatters";
+import { formatFollowers } from "../utils/formatters";
 import UpgradeModal from "./UpgradeModal";
+import ArtistHoverCard from "./ArtistHoverCard";
+
+const WORK_TYPE_STYLES = {
+  "Full Time":  { bg: "#EBF5EB", color: "#2E7D32", dot: "#4CAF50" },
+  "Part Time":  { bg: "#E8F0FE", color: "#1A56A0", dot: "#4285F4" },
+  "Freelancer": { bg: "#FFF3E0", color: "#C4501A", dot: "#D4651A" },
+};
+
+function WorkTypeBadge({ type }) {
+  if (!type) return null;
+  const s = WORK_TYPE_STYLES[type] || WORK_TYPE_STYLES["Freelancer"];
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: "4px",
+      padding: "2px 7px", borderRadius: "20px",
+      background: s.bg, color: s.color,
+      fontSize: "9px", fontWeight: 700, fontFamily: "'DM Sans', sans-serif",
+      letterSpacing: "0.06em", whiteSpace: "nowrap",
+    }}>
+      <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: s.dot, flexShrink: 0 }} />
+      {type}
+    </span>
+  );
+}
 
 export default function ArtistCard({ artist, index }) {
   const navigate = useNavigate();
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   return (
     <>
-      <motion.div
+      <motion.article
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: (index % 8) * 0.05 }}
-        className="group relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 transition-all duration-300 hover:-translate-y-1"
+        transition={{ duration: 0.45, delay: (index % 8) * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
+        onHoverStart={() => setHovered(true)}
+        onHoverEnd={() => setHovered(false)}
+        className="group relative cursor-pointer"
+        style={{
+          background: "var(--surface)",
+          border: "1px solid var(--border)",
+          borderRadius: "8px",
+          boxShadow: hovered
+            ? "0 8px 32px rgba(0,0,0,0.12)"
+            : "0 1px 4px rgba(0,0,0,0.05)",
+          transition: "box-shadow 0.3s ease",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}
+        onClick={() => navigate(`/artist/${artist.id}`)}
       >
-        {artist.isPremium && (
-          <div className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold shadow-lg">
-            <FiStar size={10} fill="white" />
-            Premium
-          </div>
-        )}
-
-        <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 overflow-hidden">
-          <img
+        {/* ── Image ── */}
+        <div
+          className="relative overflow-hidden"
+          style={{ height: "340px", background: "var(--subtle)", flexShrink: 0 }}
+        >
+          <motion.img
             src={artist.profile_image}
             alt={artist.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            style={{
+              position: "absolute", inset: 0,
+              width: "100%", height: "100%",
+              objectFit: "cover", objectPosition: "center top",
+              display: "block",
+            }}
+            animate={{ scale: hovered ? 1.04 : 1 }}
+            transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+          {/* Gradient overlay */}
+          <motion.div
+            className="absolute inset-0"
+            animate={{ opacity: hovered ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              background: "linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.45) 100%)",
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* Premium ribbon */}
+          {artist.isPremium && (
+            <div className="absolute overflow-hidden" style={{ top: 0, right: 0, width: 72, height: 72, pointerEvents: "none" }}>
+              <div style={{
+                background: "var(--ink)", color: "#fff",
+                fontSize: "7px", fontWeight: 700, letterSpacing: "0.12em",
+                padding: "5px 26px", position: "absolute",
+                top: 18, right: -22, transform: "rotate(45deg)",
+                fontFamily: "'DM Sans', sans-serif",
+                whiteSpace: "nowrap", textTransform: "uppercase",
+              }}>
+                Premium
+              </div>
+            </div>
+          )}
+
+          {/* View Profile on hover */}
+          <motion.div
+            className="absolute bottom-0 left-0 right-0 flex items-center justify-center py-2.5"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 6 }}
+            transition={{ duration: 0.2 }}
+            style={{ pointerEvents: "none" }}
+          >
+            <span style={{
+              fontSize: "10px", fontWeight: 700, textTransform: "uppercase",
+              letterSpacing: "0.22em", color: "#fff",
+              fontFamily: "'DM Sans', sans-serif",
+              textShadow: "0 1px 4px rgba(0,0,0,0.5)",
+            }}>
+              View Profile →
+            </span>
+          </motion.div>
         </div>
 
-        <div className="p-4">
-          <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full mb-2 ${getCategoryColor(artist.art_category)}`}>
-            {artist.art_category}
-          </span>
-
-          <h3 className="font-bold text-gray-900 dark:text-white text-base mb-1 truncate">
-            {artist.name}
-          </h3>
-
-          <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-xs mb-3">
-            <FiMapPin size={11} />
-            <span className="truncate">{artist.location}</span>
+        {/* ── Info ── */}
+        <div style={{ padding: "12px 14px 14px" }}>
+          {/* Category + Work Type row */}
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px", flexWrap: "wrap" }}>
+            <p style={{
+              fontSize: "9px", fontWeight: 700, textTransform: "uppercase",
+              letterSpacing: "0.2em", color: "var(--ink-4)",
+              fontFamily: "'DM Sans', sans-serif",
+            }}>
+              {artist.art_category}
+            </p>
+            <WorkTypeBadge type={artist.work_type} />
           </div>
 
-          <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 text-sm mb-4">
-            <FiUsers size={13} />
-            <span className="font-semibold">{formatFollowers(artist.followers)}</span>
-            <span className="text-gray-400 text-xs">followers</span>
-          </div>
-
-          <div className="flex gap-2">
-            <button
-              onClick={() => navigate(`/artist/${artist.id}`)}
-              className="flex-1 py-2 px-3 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors"
+          {/* Artist name — hover card trigger */}
+          <ArtistHoverCard artist={artist}>
+            <h3
+              className="font-serif truncate"
+              style={{
+                fontSize: "16px", fontWeight: 600, color: "var(--ink)",
+                lineHeight: 1.25, marginBottom: "3px",
+                transition: "color 0.15s",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--ink-3)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--ink)")}
             >
-              View Profile
-            </button>
+              {artist.name}
+            </h3>
+          </ArtistHoverCard>
+
+          {/* Location */}
+          <p style={{
+            fontSize: "11px", color: "var(--ink-4)",
+            fontFamily: "'DM Sans', sans-serif",
+            display: "flex", alignItems: "center", gap: "4px",
+            marginBottom: "10px",
+          }}>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}>
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            {artist.location}
+          </p>
+
+          {/* Bottom row */}
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            paddingTop: "10px", borderTop: "1px solid var(--border)",
+          }}>
+            {/* Followers with icon */}
+            <span style={{
+              fontSize: "11px", color: "var(--ink-3)",
+              fontFamily: "'DM Sans', sans-serif", fontWeight: 500,
+              display: "flex", alignItems: "center", gap: "5px",
+            }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#C4501A", flexShrink: 0 }}>
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              {formatFollowers(artist.followers)}
+            </span>
 
             {!artist.isPremium && (
               <button
-                onClick={() => setShowUpgrade(true)}
-                className="flex items-center gap-1 py-2 px-3 rounded-lg border border-orange-200 dark:border-orange-800 text-orange-500 dark:text-orange-400 text-sm font-semibold hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
-                title="Upgrade to Premium"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowUpgrade(true);
+                }}
+                style={{
+                  fontSize: "10px", fontWeight: 700, textTransform: "uppercase",
+                  letterSpacing: "0.12em", color: "#fff",
+                  background: "linear-gradient(135deg, #D4651A, #C4501A)",
+                  border: "none",
+                  padding: "5px 10px", borderRadius: "4px",
+                  fontFamily: "'DM Sans', sans-serif",
+                  cursor: "pointer", transition: "opacity 0.15s",
+                  boxShadow: "0 2px 8px rgba(196,80,26,0.35)",
+                }}
+                onMouseEnter={e => (e.currentTarget.style.opacity = "0.8")}
+                onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
               >
-                <FiZap size={14} />
+                ⚡ Upgrade
               </button>
             )}
           </div>
         </div>
-      </motion.div>
+      </motion.article>
 
       {showUpgrade && (
         <UpgradeModal artist={artist} onClose={() => setShowUpgrade(false)} />

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiSun, FiMoon, FiMenu, FiX, FiZap } from "react-icons/fi";
 import { useArtists } from "../context/ArtistContext";
 
 const NAV_LINKS = [
@@ -15,101 +14,153 @@ export default function Header() {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header
+      className="sticky top-0 z-50 transition-colors duration-300"
+      style={{
+        background: darkMode ? "rgba(12,12,12,0.92)" : "rgba(250,250,248,0.92)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderBottom: "1px solid var(--border)",
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-6 sm:px-10">
+        <div className="flex items-center justify-between h-[60px]">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-              <span className="text-white font-black text-sm">A</span>
+          <Link to="/" className="flex items-center gap-2.5 group">
+            {/* Icon badge */}
+            <div style={{
+              width: "32px", height: "32px", borderRadius: "8px",
+              background: "linear-gradient(135deg, #D4651A 0%, #C4501A 100%)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 2px 8px rgba(196,80,26,0.30)",
+              flexShrink: 0,
+            }}>
+              <span style={{ color: "#fff", fontSize: "14px", fontWeight: 800, fontFamily: "'DM Sans', sans-serif", letterSpacing: "-0.02em" }}>A</span>
             </div>
-            <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-white">
-              Artis<span className="text-orange-500">ta</span>
+            {/* Wordmark */}
+            <span className="font-serif text-xl" style={{ letterSpacing: "0.04em" }}>
+              <span style={{ color: "var(--ink)", fontWeight: 600 }}>Arti</span><span style={{ color: "#C4501A", fontWeight: 600 }}>sta</span>
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`text-sm font-medium transition-colors hover:text-orange-500 ${
-                  location.pathname === link.to
-                    ? "text-orange-500"
-                    : "text-gray-600 dark:text-gray-400"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <nav className="hidden md:flex items-center gap-10">
+            {NAV_LINKS.map((link) => {
+              const active = location.pathname === link.to;
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="relative text-xs font-semibold uppercase tracking-editorial transition-colors duration-200"
+                  style={{ color: active ? "var(--ink)" : "var(--ink-3)" }}
+                >
+                  {link.label}
+                  {active && (
+                    <motion.div
+                      layoutId="nav-underline"
+                      className="absolute -bottom-[20px] left-0 right-0"
+                      style={{ height: "1px", background: "var(--ink)" }}
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Right Actions */}
+          {/* Right */}
           <div className="flex items-center gap-3">
+            {/* Dark mode */}
             <button
               onClick={toggleDarkMode}
-              aria-label="Toggle dark mode"
-              className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+              aria-label="Toggle theme"
+              className="w-8 h-8 flex items-center justify-center transition-opacity hover:opacity-50"
+              style={{ color: "var(--ink-3)" }}
             >
-              {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
+              {darkMode ? (
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                </svg>
+              ) : (
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+              )}
             </button>
 
             {/* Upgrade CTA */}
             <Link
               to="/featured"
-              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-semibold shadow-md hover:shadow-orange-200 dark:hover:shadow-orange-900/40 hover:scale-105 transition-all"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 text-[11px] font-semibold uppercase tracking-editorial transition-opacity hover:opacity-85"
+              style={{
+                background: "linear-gradient(135deg, #D4651A 0%, #C4501A 100%)",
+                color: "#FFFFFF",
+                fontFamily: "'DM Sans', sans-serif",
+                borderRadius: "20px",
+                boxShadow: "0 2px 10px rgba(196,80,26,0.28)",
+                letterSpacing: "0.08em",
+              }}
             >
-              <FiZap size={14} />
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
               Upgrade
             </Link>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile menu toggle */}
             <button
-              className="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+              className="md:hidden w-8 h-8 flex items-center justify-center"
               onClick={() => setMenuOpen((v) => !v)}
-              aria-label="Toggle menu"
+              style={{ color: "var(--ink)" }}
             >
-              {menuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+              {menuOpen ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <path d="M3 12h18M3 6h18M3 18h18"/>
+                </svg>
+              )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950"
+            transition={{ duration: 0.18 }}
+            style={{ borderTop: "1px solid var(--border)", background: "var(--surface)" }}
           >
-            <div className="px-4 py-4 flex flex-col gap-3">
+            <div className="px-6 py-5 flex flex-col gap-1">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
                   onClick={() => setMenuOpen(false)}
-                  className={`text-sm font-medium py-2 hover:text-orange-500 transition-colors ${
-                    location.pathname === link.to
-                      ? "text-orange-500"
-                      : "text-gray-700 dark:text-gray-300"
-                  }`}
+                  className="text-xs font-semibold uppercase tracking-editorial py-2.5 px-3 transition-colors"
+                  style={{ color: location.pathname === link.to ? "var(--ink)" : "var(--ink-3)" }}
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-2 border-t border-gray-100 dark:border-gray-800">
-                <Link
-                  to="/featured"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-semibold"
-                >
-                  <FiZap size={14} /> Upgrade Profile
-                </Link>
-              </div>
+              <Link
+                to="/featured"
+                onClick={() => setMenuOpen(false)}
+                className="mt-2 flex items-center justify-center gap-2 w-full py-3 text-[11px] font-semibold uppercase tracking-editorial"
+                style={{
+                  background: "linear-gradient(135deg, #D4651A 0%, #C4501A 100%)",
+                  color: "#FFFFFF", borderRadius: "20px",
+                  boxShadow: "0 2px 8px rgba(196,80,26,0.25)",
+                }}
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Upgrade
+              </Link>
             </div>
           </motion.div>
         )}

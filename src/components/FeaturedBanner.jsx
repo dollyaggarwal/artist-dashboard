@@ -1,67 +1,118 @@
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { FiStar, FiArrowRight } from "react-icons/fi";
-import { formatFollowers, getCategoryColor } from "../utils/formatters";
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 export default function FeaturedBanner({ artists }) {
   const navigate = useNavigate();
-  const premiumArtists = artists.filter((a) => a.isPremium).slice(0, 3);
-
+  const premiumArtists = artists.filter((a) => a.isPremium);
   if (premiumArtists.length === 0) return null;
 
+  // Duplicate for seamless infinite scroll
+  const items = [...premiumArtists, ...premiumArtists, ...premiumArtists];
+
   return (
-    <section id="featured" className="mb-10">
-      <div className="flex items-center gap-2 mb-4">
-        <FiStar className="text-amber-500" size={16} fill="currentColor" />
-        <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
-          Featured Premium Artists
-        </h2>
+    <motion.section
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+      className="mb-14"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6"
+        style={{ paddingBottom: "14px", borderBottom: "1px solid var(--border)" }}>
+        <div className="flex items-center gap-3">
+          <motion.span
+            initial={{ scaleY: 0 }} animate={{ scaleY: 1 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            style={{ display: "inline-block", width: "3px", height: "22px",
+              background: "linear-gradient(to bottom, #D4651A, #C4501A)",
+              borderRadius: "2px", transformOrigin: "top", flexShrink: 0 }}
+          />
+          <h2 className="font-serif" style={{ fontSize: "21px", fontWeight: 600, color: "var(--ink)" }}>
+            Featured Artists
+          </h2>
+          <span style={{ padding: "3px 9px", background: "linear-gradient(135deg, #D4651A, #C4501A)",
+            color: "#fff", fontSize: "8px", fontWeight: 700, textTransform: "uppercase",
+            letterSpacing: "0.16em", fontFamily: "'DM Sans', sans-serif", borderRadius: "20px" }}>
+            Premium
+          </span>
+        </div>
+        <button onClick={() => navigate("/featured")}
+          style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase",
+            letterSpacing: "0.14em", color: "#C4501A", background: "none", border: "none",
+            cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "opacity 0.15s" }}
+          onMouseEnter={e => (e.currentTarget.style.opacity = "0.6")}
+          onMouseLeave={e => (e.currentTarget.style.opacity = "1")}>
+          View all →
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {premiumArtists.map((artist, i) => (
-          <motion.div
-            key={artist.id}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="relative rounded-2xl overflow-hidden h-44 cursor-pointer group shadow-md"
-            onClick={() => navigate(`/artist/${artist.id}`)}
-          >
-            <img
-              src={artist.banner}
-              alt={artist.name}
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+      {/* Infinite scroll marquee */}
+      <div style={{ overflow: "hidden", position: "relative" }}>
+        {/* Left/right fade masks */}
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "80px", zIndex: 2,
+          background: "linear-gradient(to right, var(--bg), transparent)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "80px", zIndex: 2,
+          background: "linear-gradient(to left, var(--bg), transparent)", pointerEvents: "none" }} />
 
-            <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between">
-              <div className="flex items-center gap-3">
-                <img
-                  src={artist.profile_image}
-                  alt={artist.name}
-                  className="w-10 h-10 rounded-full border-2 border-white object-cover"
-                />
-                <div>
-                  <p className="text-white font-bold text-sm">{artist.name}</p>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${getCategoryColor(artist.art_category)}`}>
-                    {artist.art_category}
-                  </span>
+        <motion.div
+          animate={{ x: ["0%", "-33.33%"] }}
+          transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+          style={{ display: "flex", gap: "16px", width: "max-content" }}
+        >
+          {items.map((artist, i) => (
+            <div
+              key={`${artist.id}-${i}`}
+              onClick={() => navigate(`/artist/${artist.id}`)}
+              className="group"
+              style={{ cursor: "pointer", flexShrink: 0, width: "180px", paddingBottom: "8px" }}
+            >
+              {/* Outer wrapper provides the circular clip — separate from the scaling element */}
+              <div style={{
+                width: "180px", height: "180px", borderRadius: "50%",
+                overflow: "hidden",
+                border: "3px solid var(--border)",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
+              }}>
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  style={{ width: "100%", height: "100%", position: "relative" }}
+                >
+                  <img
+                    src={artist.profile_image}
+                    alt={artist.name}
+                    style={{ width: "100%", height: "100%", objectFit: "cover",
+                      objectPosition: "center 20%", display: "block" }}
+                  />
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100"
+                    style={{ background: "rgba(0,0,0,0.28)", transition: "opacity 0.25s",
+                      display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <span style={{ color: "#fff", fontSize: "10px", fontWeight: 700,
+                      textTransform: "uppercase", letterSpacing: "0.12em",
+                      fontFamily: "'DM Sans', sans-serif" }}>View</span>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Name below */}
+              <div style={{ textAlign: "center", marginTop: "10px" }}>
+                <div className="font-serif" style={{ fontSize: "13px", fontWeight: 600,
+                  color: "var(--ink)", lineHeight: 1.2, whiteSpace: "nowrap",
+                  overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {artist.name}
+                </div>
+                <div style={{ fontSize: "9px", fontWeight: 600, textTransform: "uppercase",
+                  letterSpacing: "0.16em", color: "#C4501A",
+                  fontFamily: "'DM Sans', sans-serif", marginTop: "2px" }}>
+                  {artist.art_category}
                 </div>
               </div>
-              <div className="flex items-center gap-1 text-white/80 text-xs">
-                <span>{formatFollowers(artist.followers)}</span>
-                <FiArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
-              </div>
             </div>
-
-            {/* Premium badge */}
-            <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400 text-white text-xs font-bold">
-              <FiStar size={9} fill="white" /> Premium
-            </div>
-          </motion.div>
-        ))}
+          ))}
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

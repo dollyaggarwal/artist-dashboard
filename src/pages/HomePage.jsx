@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FiLoader } from "react-icons/fi";
 import { useArtists } from "../context/ArtistContext";
 import { useDebounce } from "../hooks/useDebounce";
 import { useFilteredArtists } from "../hooks/useFilteredArtists";
@@ -9,124 +8,154 @@ import SearchFilters from "../components/SearchFilters";
 import ArtistCard from "../components/ArtistCard";
 import SkeletonCard from "../components/SkeletonCard";
 import FeaturedBanner from "../components/FeaturedBanner";
+import HeroBanner from "../components/HeroBanner";
 
 const SKELETON_COUNT = 8;
+
+// Beautiful art-world background image
+const GRID_BG = "https://images.unsplash.com/photo-1578926288207-a90a5366759d?w=1920&q=80";
 
 export default function HomePage() {
   const { artists } = useArtists();
 
-  // Filter / sort state — persisted in component state
-  const [search, setSearch] = useState(() => sessionStorage.getItem("filter_search") || "");
+  const [search, setSearch]     = useState(() => sessionStorage.getItem("filter_search")   || "");
   const [category, setCategory] = useState(() => sessionStorage.getItem("filter_category") || "All");
-  const [sortBy, setSortBy] = useState(() => sessionStorage.getItem("filter_sort") || "followers_desc");
+  const [sortBy, setSortBy]     = useState(() => sessionStorage.getItem("filter_sort")     || "followers_desc");
 
-  // Persist filters to sessionStorage for the tab session
-  const handleSetSearch = (v) => { setSearch(v); sessionStorage.setItem("filter_search", v); };
-  const handleSetCategory = (v) => { setCategory(v); sessionStorage.setItem("filter_category", v); };
-  const handleSetSortBy = (v) => { setSortBy(v); sessionStorage.setItem("filter_sort", v); };
+  const set = (key, setter) => (v) => { setter(v); sessionStorage.setItem(key, v); };
 
-  // Debounce search for performance
   const debouncedSearch = useDebounce(search, 350);
 
-  // Loading simulation on first mount
-  const [loading] = useState(() => {
-    // Only show skeleton on first visit
+  const [showSkeleton, setShowSkeleton] = useState(() => {
     const seen = sessionStorage.getItem("visited");
     if (!seen) { sessionStorage.setItem("visited", "1"); return true; }
     return false;
   });
-  const [showSkeleton, setShowSkeleton] = useState(loading);
+  if (showSkeleton) setTimeout(() => setShowSkeleton(false), 1100);
 
-  if (showSkeleton) {
-    setTimeout(() => setShowSkeleton(false), 1000);
-  }
-
-  const filteredArtists = useFilteredArtists(artists, {
-    search: debouncedSearch,
-    category,
-    sortBy,
-  });
-
+  const filteredArtists = useFilteredArtists(artists, { search: debouncedSearch, category, sortBy });
   const { paginatedItems, hasMore, loadMore } = usePagination(filteredArtists);
 
-  const resultLabel =
-    filteredArtists.length === artists.length
-      ? `${artists.length} artists`
-      : `${filteredArtists.length} of ${artists.length} artists`;
+  const resultLabel = filteredArtists.length === artists.length
+    ? `${artists.length} Artists`
+    : `${filteredArtists.length} of ${artists.length} Artists`;
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Page Title */}
-      <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
-          Discover Artists
-        </h1>
-        <p className="mt-1.5 text-gray-500 dark:text-gray-400 text-sm">
-          Explore creatives from around the world
-        </p>
-      </div>
+    <main>
+      {/* Full-width hero banner */}
+      <HeroBanner />
 
-      {/* Featured Premium Section */}
-      <FeaturedBanner artists={artists} />
-
-      {/* Search & Filters */}
-      <div className="mb-6">
-        <SearchFilters
-          search={search}
-          setSearch={handleSetSearch}
-          category={category}
-          setCategory={handleSetCategory}
-          sortBy={sortBy}
-          setSortBy={handleSetSortBy}
+      {/* ── Section with background art image ── */}
+      <div className="relative">
+        {/* Fixed background image */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 0,
+            backgroundImage: `url(${GRID_BG})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundAttachment: "fixed",
+          }}
         />
-      </div>
+        {/* Colour + opacity tint over the bg — adapts to dark/light mode */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 1,
+            background: "var(--grid-tint)",
+          }}
+        />
 
-      {/* Results count */}
-      <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
-        Showing <span className="font-semibold text-gray-600 dark:text-gray-300">{resultLabel}</span>
-        {category !== "All" && ` in ${category}`}
-        {debouncedSearch && ` matching "${debouncedSearch}"`}
-      </p>
+        {/* Actual content sits on top */}
+        <div className="relative max-w-7xl mx-auto px-6 sm:px-10 pb-16" style={{ zIndex: 2 }}>
+          {/* Featured premium artists */}
+          <FeaturedBanner artists={artists} />
 
-      {/* Artist Grid */}
-      {showSkeleton ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
-      ) : filteredArtists.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-20"
-        >
-          <p className="text-5xl mb-4">🎨</p>
-          <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300">No artists found</h3>
-          <p className="text-sm text-gray-400 mt-1">Try adjusting your search or filters</p>
-        </motion.div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {paginatedItems.map((artist, index) => (
-              <ArtistCard key={artist.id} artist={artist} index={index} />
-            ))}
+          {/* Search & Filters — sticky */}
+          <div
+            id="discover-section"
+            className="sticky z-40 -mx-6 sm:-mx-10 px-6 sm:px-10 py-4 mb-8"
+            style={{
+              top: "60px",
+              background: "var(--grid-tint)",
+              backdropFilter: "blur(10px)",
+              borderBottom: "1px solid var(--border)",
+            }}
+          >
+            <SearchFilters
+              search={search}     setSearch={set("filter_search", setSearch)}
+              category={category} setCategory={set("filter_category", setCategory)}
+              sortBy={sortBy}     setSortBy={set("filter_sort", setSortBy)}
+            />
           </div>
 
-          {/* Load More / Infinite Scroll button */}
-          {hasMore && (
-            <div className="flex justify-center mt-10">
-              <button
-                onClick={loadMore}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold text-sm hover:border-orange-400 hover:text-orange-500 transition-all"
-              >
-                <FiLoader size={15} />
-                Load More Artists
-              </button>
+          {/* Results meta */}
+          <div className="flex items-center justify-between mb-6">
+            <p style={{
+              fontSize: "10px", fontWeight: 600, textTransform: "uppercase",
+              letterSpacing: "0.18em", color: "var(--ink-4)", fontFamily: "'DM Sans', sans-serif",
+            }}>
+              {resultLabel}
+              {category !== "All" && ` · ${category}`}
+              {debouncedSearch && ` · "${debouncedSearch}"`}
+            </p>
+          </div>
+
+          {/* Grid */}
+          {showSkeleton ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {Array.from({ length: SKELETON_COUNT }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
+          ) : filteredArtists.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-col items-center justify-center py-32 gap-4"
+            >
+              <div className="w-12 h-12 flex items-center justify-center text-2xl"
+                style={{ background: "var(--subtle)", border: "1px solid var(--border)", borderRadius: "8px" }}>
+                🎨
+              </div>
+              <h3 className="font-serif" style={{ fontSize: "20px", fontWeight: 500, color: "var(--ink)" }}>
+                No artists found
+              </h3>
+              <p style={{ fontSize: "12px", color: "var(--ink-4)", fontFamily: "'DM Sans', sans-serif" }}>
+                Try adjusting your search or category filter
+              </p>
+            </motion.div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {paginatedItems.map((artist, index) => (
+                  <ArtistCard key={artist.id} artist={artist} index={index} />
+                ))}
+              </div>
+
+              {hasMore && (
+                <div className="flex justify-center mt-14">
+                  <button
+                    onClick={loadMore}
+                    className="px-8 py-3.5 text-[10px] font-semibold uppercase tracking-editorial"
+                    style={{
+                      background: "transparent", color: "var(--ink)",
+                      border: "1px solid var(--ink)", borderRadius: "4px",
+                      fontFamily: "'DM Sans', sans-serif",
+                      transition: "background 0.2s, color 0.2s",
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "var(--ink)"; e.currentTarget.style.color = "#fff"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--ink)"; }}
+                  >
+                    Load More Artists
+                  </button>
+                </div>
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </main>
   );
 }

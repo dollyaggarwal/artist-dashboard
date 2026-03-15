@@ -5,33 +5,32 @@ import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
 import FeaturedPage from "./pages/FeaturedPage";
-import CustomCursor from "./components/animations/CustomCursor";
+import PromoTab from "./components/PromoTab";
+import WelcomeModal from "./components/WelcomeModal";
 
 export default function App() {
   return (
     <ArtistProvider>
       <BrowserRouter>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
-          <CustomCursor />
+        <div className="min-h-screen transition-colors duration-300" style={{ background: "var(--bg)" }}>
+          <PromoTab />
           <Header />
-
+          <WelcomeModal />
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/"           element={<HomePage />} />
             <Route path="/artist/:id" element={<ProfilePage />} />
-            <Route path="/featured" element={<FeaturedPage />} />
+            <Route path="/featured"   element={<FeaturedPage />} />
           </Routes>
-
           <Toaster
             position="bottom-right"
             toastOptions={{
               style: {
-                background: "#1f2937",
-                color: "#f9fafb",
-                borderRadius: "12px",
-                fontSize: "14px",
-              },
-              success: {
-                iconTheme: { primary: "#f97316", secondary: "#fff" },
+                background: "#0A0A0A",
+                color: "#fff",
+                borderRadius: "6px",
+                fontSize: "12px",
+                letterSpacing: "0.05em",
+                fontFamily: "'DM Sans', sans-serif",
               },
             }}
           />
