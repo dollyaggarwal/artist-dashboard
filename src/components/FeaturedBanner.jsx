@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 export default function FeaturedBanner({ artists }) {
