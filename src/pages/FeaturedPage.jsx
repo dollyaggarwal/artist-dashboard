@@ -105,55 +105,55 @@ function BenefitsRow({ benefits }) {
   );
 }
 
-const STRIPE_IMG  = "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=1920&q=90";
+// const STRIPE_IMG  = "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=1920&q=90";
 
-// Collage panels — no portrait photos, only art/design/camera/craft images
-const COLLAGE = [
-  {
-    img: "https://images.unsplash.com/photo-1452457807411-4979b707c5be?w=900&q=90",
-    label: "Photography",
-    span: "1/3",  // tall left panel
-    pos: "center center",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=700&q=90",
-    label: "Digital Art",
-    span: null,
-    pos: "center center",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=700&q=90",
-    label: "Painting",
-    span: null,
-    pos: "center center",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=90",
-    label: "3D Design",
-    span: null,
-    pos: "center center",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=700&q=90",
-    label: "Illustration",
-    span: null,
-    pos: "center center",
-    filter: "brightness(0.88) saturate(1.1)",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1526285759904-71d1170ed2ac?w=700&q=90",
-    label: "Sculpture",
-    span: null,
-    pos: "center center",
-    filter: "brightness(0.85) sepia(0.08)",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=700&q=90",
-    label: "Abstract",
-    span: null,
-    pos: "center center",
-  },
-];
+// // Collage panels — no portrait photos, only art/design/camera/craft images
+// const COLLAGE = [
+//   {
+//     img: "https://images.unsplash.com/photo-1452457807411-4979b707c5be?w=900&q=90",
+//     label: "Photography",
+//     span: "1/3",  // tall left panel
+//     pos: "center center",
+//   },
+//   {
+//     img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=700&q=90",
+//     label: "Digital Art",
+//     span: null,
+//     pos: "center center",
+//   },
+//   {
+//     img: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=700&q=90",
+//     label: "Painting",
+//     span: null,
+//     pos: "center center",
+//   },
+//   {
+//     img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=90",
+//     label: "3D Design",
+//     span: null,
+//     pos: "center center",
+//   },
+//   {
+//     img: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=700&q=90",
+//     label: "Illustration",
+//     span: null,
+//     pos: "center center",
+//     filter: "brightness(0.88) saturate(1.1)",
+//   },
+//   {
+//     img: "https://images.unsplash.com/photo-1526285759904-71d1170ed2ac?w=700&q=90",
+//     label: "Sculpture",
+//     span: null,
+//     pos: "center center",
+//     filter: "brightness(0.85) sepia(0.08)",
+//   },
+//   {
+//     img: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=700&q=90",
+//     label: "Abstract",
+//     span: null,
+//     pos: "center center",
+//   },
+// ];
 
 const PREMIUM_BENEFITS = [
   { icon: "⭐", label: "Priority Listing",   desc: "Appear at the top of all searches" },
