@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import UpgradeModal from "./UpgradeModal";
+import PromoTab from "./PromoTab";
 
 const STORAGE_KEY = "artista_welcome_shown";
 
@@ -20,11 +20,6 @@ export default function WelcomeModal() {
 
   if (!show) return null;
 
-  return (
-    <UpgradeModal
-      artist={null}
-      isWelcome={true}
-      onClose={() => setShow(false)}
-    />
-  );
+  // Render PromoTab with modal forced open on first visit
+  return <PromoTab autoOpen={true} onAutoClose={() => setShow(false)} />;
 }
