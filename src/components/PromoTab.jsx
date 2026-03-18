@@ -55,8 +55,9 @@ export default function PromoTab({ autoOpen = false, onAutoClose }) {
 
             {/* Card */}
             <motion.div
-              className="relative z-10 bg-white overflow-hidden"
+              className="relative z-10 overflow-hidden"
               style={{
+                background: "#f5f0e8",
                 width: isMobile ? "88vw" : "780px",
                 maxWidth: isMobile ? "360px" : "780px",
                 maxHeight: isMobile ? "88vh" : "560px",
@@ -73,7 +74,7 @@ export default function PromoTab({ autoOpen = false, onAutoClose }) {
                 className="absolute top-3 right-3 z-30 flex items-center justify-center"
                 style={{
                   width: 30, height: 30,
-                  background: "rgba(255,255,255,0.95)",
+                  background: "rgba(245,240,232,0.95)",
                   border: "1px solid rgba(0,0,0,0.12)",
                   borderRadius: "50%", color: "#0A0A0A",
                   boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
@@ -90,7 +91,7 @@ export default function PromoTab({ autoOpen = false, onAutoClose }) {
                   width: isMobile ? "100%" : "50%",
                   flexShrink: 0,
                   padding: isMobile ? "20px 20px 20px" : "48px 52px",
-                  background: "#fff",
+                  background: "#f5f0e8",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
@@ -110,7 +111,7 @@ export default function PromoTab({ autoOpen = false, onAutoClose }) {
                     />
                     <div style={{
                       position: "absolute", inset: 0,
-                      background: "linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(255,255,255,1) 95%)",
+                      background: "linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(245,240,232,1) 95%)",
                     }} />
                     <span style={{
                       position: "absolute", top: 12, left: 16,
@@ -177,7 +178,7 @@ export default function PromoTab({ autoOpen = false, onAutoClose }) {
                     fontSize: "13px", outline: "none",
                     border: "1.5px solid #0A0A0A", borderRadius: 0,
                     fontFamily: "'DM Sans', sans-serif",
-                    color: "#0A0A0A", background: "#fff",
+                    color: "#0A0A0A", background: "#f5f0e8",
                     marginBottom: "8px", boxSizing: "border-box",
                   }}
                 />
